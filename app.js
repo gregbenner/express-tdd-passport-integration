@@ -10,14 +10,9 @@ var http = require('http');
 var path = require('path');
 var config = require('./config');
 var mongoose = require('mongoose');
+var expressValidator = require('express-validator');
 
-// var db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function callback () {
-//   console.log('database connected');
-// });
-
-var app = express();
+var app = exports.app = express();
 
 
 // set the dbUrl to the mongodb url that corrosponds to the environment we are in
@@ -36,6 +31,8 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 app.use(express.session());
+app.use(expressValidator);
+
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -46,6 +43,14 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index);
 app.get('/users', user.list);
+
+app.post('/signup', users.signup);
+
+app.get('/add/:first/:second', function (req, res) {
+  // convert the two values to floats and add them together
+  var sum = parseFloat(req.params.first) + parseFloat(req.params.second);
+  res.send(200, String(sum));
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

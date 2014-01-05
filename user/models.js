@@ -7,10 +7,6 @@ var bcrypt = require('bcrypt');
 // Constants
 var BCRYPT_COST = 12;
 
-
-
-
-
 var emailSchema = new Schema({
   type: {type: String},
   value: String
@@ -22,7 +18,8 @@ var userSchema = new Schema({
    givenName   : String,
    familyName  : String
  },
- emails: [emailSchema]
+ emails: [emailSchema],
+ passwordHash: String
 });
 
 userSchema.statics.comparePasswordAndHash = function(password, passwordHash, fn) {

@@ -7,25 +7,41 @@ var mongoose = require('mongoose');
 
 process.env.NODE_ENV = 'test';
 
-beforeEach(function(done) {
-  function clearDb() {
-    for(var i in mongoose.connection.collections) {
-      mongoose.connection.collections[i].remove(function(){});
-    }
-    return done();
-  }
+beforeEach(function (done) {
 
-  if(mongoose.connections.readyStat === 0) {
-    mongoose.connect(config.db.test, function(err) {
-      if(err) throw err;
-      return clearDb();
-    });
-  }  else {
-    return clearDb();
-  }
+ function clearDB() {
+   for (var i in mongoose.connection.collections) {
+     mongoose.connection.collections[i].remove();
+   }
+   return done();
+ }
+
+ function reconnect() {
+   mongoose.connect(config.db.test, function (err) {
+     if (err) {
+       throw err;
+     }
+     return clearDB();
+   });
+ }
+
+ function checkState() {
+   switch (mongoose.connection.readyState) {
+   case 0:
+     reconnect();
+     break;
+   case 1:
+     clearDB();
+     break;
+   default:
+     process.nextTick(checkState);
+   }
+ }
+
+ checkState();
 });
 
-afterEach(function(done) {
-  mongoose.disconnect();
-  return done();
+afterEach(function (done) {
+ mongoose.disconnect();
+ return done();
 });
