@@ -11,13 +11,20 @@ var path = require('path');
 var config = require('./config');
 var mongoose = require('mongoose');
 
-app.config(function() {
-  // set the dbUrl to the mongodb url that corrosponds to the environment we are in
-  app.set('dbUrl', config.db[app.settings.env]);
-  mongoose.connect(app.get('dbUrl'));
-});
+// var db = mongoose.connection;
+// db.on('error', console.error.bind(console, 'connection error:'));
+// db.once('open', function callback () {
+//   console.log('database connected');
+// });
 
 var app = express();
+
+
+// set the dbUrl to the mongodb url that corrosponds to the environment we are in
+app.set('dbUrl', config.db[app.settings.env]);
+mongoose.connect(app.get('dbUrl'));
+
+
 
 // all environments
 app.set('port', process.env.PORT || 3000);

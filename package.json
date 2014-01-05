@@ -10,7 +10,8 @@
     "express": "3.4.0",
     "jade": "*",
     "supervisor": "0.4.x",
-     "mongoose": "3.x.x"
+     "mongoose": "3.x.x",
+     "bcrypt": "0.7.x"
   },
   "devDependencies": {
    "mocha": "*",
