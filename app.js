@@ -8,6 +8,14 @@ var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
+var config = require('./config');
+var mongoose = require('mongoose');
+
+app.config(function() {
+  // set the dbUrl to the mongodb url that corrosponds to the environment we are in
+  app.set('dbUrl', config.db[app.settings.env]);
+  mongoose.connect(app.get('dbUrl'));
+});
 
 var app = express();
 
